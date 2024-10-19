@@ -4,20 +4,18 @@ import jwt from "jsonwebtoken"
 
 const jwtAuth = (req, res, next) => {
 
-    // const token = req.headers['authorization'];
-  // const token = req.header('Authorization');
-  const token = req.cookies.jwtToken;
+  // const token = req.cookies.jwtToken || req.headers['authorization']?.split(' ')[1]; // Check both cookies and authorization header
+  
+  const token = req.cookies.jwtToken; // Read the token from the cookie
  // console.log(token);
-
-// const bearerToken = token.split(' ')[1];
 
   //  if no token, return the error.
   if (!token) {
-    return res.status(401).json({ message: 'Unauthorized - Token missing' });
+    return res.status(401).json({ success: false, msg: 'Token missing' });
   }
 
 
-  // check if token is valid.
+  // verify the token
   try {
     const payload = jwt.verify(
       token,
@@ -26,7 +24,7 @@ const jwtAuth = (req, res, next) => {
     // console.log(payload);
 
     req.user = payload; 
-    next();
+    next();  // call the next middleware
   } catch (err) {
     console.log(err);
     return res.status(401).json({ success: false, msg: 'jwt must be provided' });

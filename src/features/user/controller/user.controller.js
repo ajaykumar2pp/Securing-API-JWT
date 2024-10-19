@@ -20,6 +20,7 @@ export const loginUser = (req, res) => {
   const isLoginSuccessful = confirmLogin({ email, password });
 
   if (isLoginSuccessful) {
+
     // Create JWT token
     const token = jwt.sign(
       { email },
@@ -34,7 +35,7 @@ export const loginUser = (req, res) => {
       maxAge: 3600000,// Cookie expiration time (1 hour)
     });
 
-    // Send response
+    // Send token
     res.status(200).json({ status: 'success', msg: 'Login successful', token });
   } else {
     res.status(400).json({ status: 'failure', msg: 'Invalid user details' });
